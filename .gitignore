@@ -7,3 +7,5 @@ uploads/
 
 # Folder admin 
 admin/
+
+.prettierrc
