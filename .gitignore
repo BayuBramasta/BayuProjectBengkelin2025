@@ -1,7 +1,3 @@
-# Modul eksternal yang tidak perlu di-track Git
-PHPMailer/
-fpdf186/
-
 # Folder upload user
 uploads/
 
