@@ -15,7 +15,6 @@
   </div>
 
 <?php
-
 include "db/koneksi.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $kodeBooking = mysqli_real_escape_string($conn, $_POST["kode_booking"]);
@@ -59,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $row["status"] .
                 '</span></td>
                 <td>' .
-                "<a href='/project2025/midtrans/examples/snap/checkout-process-simple-version.php?kodeBooking=$kodeBooking'>Bayar</a>" .
+                "<a href='/project2025/Midtrans/midtrans/examples/snap/checkout-process-simple-version.php?kodeBooking=$kodeBooking'>Bayar</a>" .
                 '</td>
                   </tr>';
         }
