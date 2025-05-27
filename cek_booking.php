@@ -15,16 +15,16 @@
   </div>
 
 <?php
-include 'db/koneksi.php';
+include "db/koneksi.php";
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $kodeBooking = mysqli_real_escape_string($conn, $_POST['kode_booking']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $kodeBooking = mysqli_real_escape_string($conn, $_POST["kode_booking"]);
     $query = "SELECT * FROM booking WHERE kode_booking = '$kodeBooking' ORDER BY created_at DESC";
     $result = mysqli_query($conn, $query);
 
     echo '<div class="container mt-4">';
     if (mysqli_num_rows($result) > 0) {
-        echo '<h5>Hasil Booking Anda:</h5>';
+        echo "<h5>Hasil Booking Anda:</h5>";
         echo '<table class="table table-bordered table-striped">';
         echo '<thead class="table-dark"><tr>
                 <th>Nama</th>
@@ -36,21 +36,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         while ($row = mysqli_fetch_assoc($result)) {
             echo '<tr>
-                    <td>' . htmlspecialchars($row['nama']) . '</td>
-                    <td>' . htmlspecialchars($row['layanan']) . '</td>
-                    <td>' . $row['tanggal_booking'] . '</td>
-                    <td>' . $row['jam_booking'] . '</td>
+                    <td>' .
+                htmlspecialchars($row["nama"]) .
+                '</td>
+                    <td>' .
+                htmlspecialchars($row["layanan"]) .
+                '</td>
+                    <td>' .
+                $row["tanggal_booking"] .
+                '</td>
+                    <td>' .
+                $row["jam_booking"] .
+                '</td>
                     <td><span class="badge bg-' .
-                        ($row['status'] == 'Selesai' ? 'success' : ($row['status'] == 'Diproses' ? 'warning' : 'secondary')) .
-                        '">' . $row['status'] . '</span></td>
+                ($row["status"] == "Selesai"
+                    ? "success"
+                    : ($row["status"] == "Diproses"
+                        ? "warning"
+                        : "secondary")) .
+                '">' .
+                $row["status"] .
+                '</span></td>
                   </tr>';
         }
 
-        echo '</tbody></table>';
+        echo "</tbody></table>";
     } else {
         echo '<div class="alert alert-danger">Data booking tidak ditemukan untuk nomor tersebut.</div>';
     }
-    echo '</div>';
+    echo "</div>";
 }
 ?>
 </body>

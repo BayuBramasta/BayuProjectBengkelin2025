@@ -1,27 +1,30 @@
 <?php
 session_start();
-include 'db/koneksi.php';
+include "db/koneksi.php";
 
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
+    $username = $_POST["username"];
+    $password = $_POST["password"];
 
-  $result = mysqli_query($conn, "SELECT * FROM admin WHERE username='$username'");
+    $result = mysqli_query(
+        $conn,
+        "SELECT * FROM admin WHERE username='$username'"
+    );
 
-  if (mysqli_num_rows($result) === 1) {
-    $user = mysqli_fetch_assoc($result);
-    if (password_verify($password, $user['password'])) {
-      $_SESSION['login'] = true;
-      header("Location: admin_dashboard.php");
-      exit;
+    if (mysqli_num_rows($result) === 1) {
+        $user = mysqli_fetch_assoc($result);
+        if (password_verify($password, $user["password"])) {
+            $_SESSION["login"] = true;
+            header("Location: admin_dashboard.php");
+            exit();
+        } else {
+            $error = "Password salah!";
+        }
     } else {
-      $error = "Password salah!";
+        $error = "Username tidak ditemukan!";
     }
-  } else {
-    $error = "Username tidak ditemukan!";
-  }
 }
 ?>
 

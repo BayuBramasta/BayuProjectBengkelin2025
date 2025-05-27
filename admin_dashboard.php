@@ -1,10 +1,10 @@
 <?php
 session_start();
-if (!isset($_SESSION['login'])) {
-  header("Location: login.php");
-  exit;
+if (!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit();
 }
-include 'db/koneksi.php';
+include "db/koneksi.php";
 ?>
 
 <!DOCTYPE html>
@@ -35,16 +35,25 @@ include 'db/koneksi.php';
 
     <?php
     // Booking hari ini
-    $today = date('Y-m-d');
-    $result_today = mysqli_query($conn, "SELECT COUNT(*) AS total_today FROM booking WHERE tanggal_booking = '$today'");
+    $today = date("Y-m-d");
+    $result_today = mysqli_query(
+        $conn,
+        "SELECT COUNT(*) AS total_today FROM booking WHERE tanggal_booking = '$today'"
+    );
     $data_today = mysqli_fetch_assoc($result_today);
-    
+
     // Semua booking
-    $result_all = mysqli_query($conn, "SELECT COUNT(*) AS total_all FROM booking");
+    $result_all = mysqli_query(
+        $conn,
+        "SELECT COUNT(*) AS total_all FROM booking"
+    );
     $data_all = mysqli_fetch_assoc($result_all);
-    
+
     // Booking selesai
-    $result_done = mysqli_query($conn, "SELECT COUNT(*) AS total_done FROM booking WHERE status = 'Selesai'");
+    $result_done = mysqli_query(
+        $conn,
+        "SELECT COUNT(*) AS total_done FROM booking WHERE status = 'Selesai'"
+    );
     $data_done = mysqli_fetch_assoc($result_done);
     ?>
     <div class="container text-center">
@@ -52,7 +61,7 @@ include 'db/koneksi.php';
         <div class="card text-white bg-primary shadow">
           <div class="card-body">
             <h5 class="card-title">Booking Hari Ini</h5>
-            <p class="card-text fs-4"><?= $data_today['total_today'] ?></p>
+            <p class="card-text fs-4"><?= $data_today["total_today"] ?></p>
           </div>
         </div>
       </div>
@@ -61,7 +70,7 @@ include 'db/koneksi.php';
         <div class="card text-white bg-success shadow">
           <div class="card-body">
             <h5 class="card-title">Total Booking</h5>
-            <p class="card-text fs-4"><?= $data_all['total_all'] ?></p>
+            <p class="card-text fs-4"><?= $data_all["total_all"] ?></p>
           </div>
         </div>
       </div>
@@ -70,35 +79,39 @@ include 'db/koneksi.php';
         <div class="card text-white bg-warning shadow">
           <div class="card-body">
             <h5 class="card-title">Selesai</h5>
-            <p class="card-text fs-4"><?= $data_done['total_done'] ?></p>
+            <p class="card-text fs-4"><?= $data_done["total_done"] ?></p>
           </div>
         </div>
     </div>
     </div>
-    <?php
-    $result_recent = mysqli_query($conn, "SELECT * FROM booking ORDER BY created_at DESC LIMIT 5");
-    ?>
+    <?php $result_recent = mysqli_query(
+        $conn,
+        "SELECT * FROM booking ORDER BY created_at DESC LIMIT 5"
+    ); ?>
     <!-- ambil data dari php ke js -->
     <?php
-// Contoh: Total booking tiap status
-$labels = ['Diproses', 'Selesai', 'Pending'];
-$data = [];
+    // Contoh: Total booking tiap status
+    $labels = ["Diproses", "Selesai", "Pending"];
+    $data = [];
 
-foreach ($labels as $status) {
-    $query = mysqli_query($conn, "SELECT COUNT(*) as total FROM booking WHERE status='$status'");
-    $count = mysqli_fetch_assoc($query)['total'];
-    $data[] = $count;
-}
-?>
+    foreach ($labels as $status) {
+        $query = mysqli_query(
+            $conn,
+            "SELECT COUNT(*) as total FROM booking WHERE status='$status'"
+        );
+        $count = mysqli_fetch_assoc($query)["total"];
+        $data[] = $count;
+    }
+    ?>
 <script>
   const ctx = document.getElementById('chartBooking').getContext('2d');
   const chartBooking = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: <?= json_encode($labels); ?>,
+      labels: <?= json_encode($labels) ?>,
       datasets: [{
         label: 'Jumlah Booking',
-        data: <?= json_encode($data); ?>,
+        data: <?= json_encode($data) ?>,
         backgroundColor: ['#ffc107', '#198754', '#6c757d']
       }]
     },
@@ -137,19 +150,25 @@ foreach ($labels as $status) {
         </tr>
       </thead>
       <tbody>
-        <?php while ($row = mysqli_fetch_assoc($result_recent)) : ?>
+        <?php while ($row = mysqli_fetch_assoc($result_recent)): ?>
         <tr>
-          <td><?= htmlspecialchars($row['nama']) ?></td>
-          <td><?= htmlspecialchars($row['layanan']) ?></td>
-          <td><?= $row['tanggal_booking'] ?></td>
-          <td><?= $row['jam_booking'] ?></td>
+          <td><?= htmlspecialchars($row["nama"]) ?></td>
+          <td><?= htmlspecialchars($row["layanan"]) ?></td>
+          <td><?= $row["tanggal_booking"] ?></td>
+          <td><?= $row["jam_booking"] ?></td>
           <td>
             <?php
-              $status = htmlspecialchars($row['status']);
-              $badge = 'secondary';
-              if ($status == 'Diproses') $badge = 'warning';
-              if ($status == 'Selesai') $badge = 'success';
-              if ($status == 'Lunas') $badge = 'success';
+            $status = htmlspecialchars($row["status"]);
+            $badge = "secondary";
+            if ($status == "Diproses") {
+                $badge = "warning";
+            }
+            if ($status == "Selesai") {
+                $badge = "success";
+            }
+            if ($status == "Lunas") {
+                $badge = "success";
+            }
             ?>
             <span class="badge bg-<?= $badge ?>"><?= $status ?></span>
           </td>
