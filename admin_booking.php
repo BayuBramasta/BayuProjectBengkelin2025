@@ -1,22 +1,20 @@
 <?php
 session_start();
-if (!isset($_SESSION['login'])) {
-  header("Location: login.php");
-  exit;
+if (!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit();
 }
-include 'db/koneksi.php';
+include "db/koneksi.php";
 // sort & search
 $sort = "DESC";
-if (isset($_POST['newest'])) {
-  $sort = "DESC";
-}
-elseif(isset($_POST['oldest'])){
-  $sort = "";
-  
+if (isset($_POST["newest"])) {
+    $sort = "DESC";
+} elseif (isset($_POST["oldest"])) {
+    $sort = "";
 }
 
 // Cek jika ada input pencarian
-$search = isset($_POST['search']) ? $_POST['search'] : '';
+$search = isset($_POST["search"]) ? $_POST["search"] : "";
 
 // Query untuk mencari berdasarkan nama, tanggal, atau layanan
 $sql = "SELECT * FROM booking WHERE 
@@ -28,89 +26,99 @@ $sql = "SELECT * FROM booking WHERE
 $result = mysqli_query($conn, $sql);
 
 // Export ke CSV
-if (isset($_POST['export_csv'])) {
+if (isset($_POST["export_csv"])) {
     // Query data booking
     $result = mysqli_query($conn, "SELECT * FROM booking");
 
     // Output headers untuk download CSV
-    header('Content-Type: text/csv');
+    header("Content-Type: text/csv");
     header('Content-Disposition: attachment; filename="booking_data.csv"');
-    
+
     // Open PHP output stream untuk mengeluarkan CSV
-    $output = fopen('php://output', 'w');
-    
+    $output = fopen("php://output", "w");
+
     // Menulis header ke CSV
-    fputcsv($output, ['No', 'Nama', 'No HP', 'Tipe Motor', 'Layanan', 'Keluhan', 'Tanggal', 'Jam', 'Waktu Booking', 'Status']);
+    fputcsv($output, [
+        "No",
+        "Nama",
+        "No HP",
+        "Tipe Motor",
+        "Layanan",
+        "Keluhan",
+        "Tanggal",
+        "Jam",
+        "Waktu Booking",
+        "Status",
+    ]);
 
     // Menulis setiap row data ke CSV
     $no = 1;
     while ($row = mysqli_fetch_assoc($result)) {
         fputcsv($output, [
-          $no++, 
-          $row['nama'], 
-            $row['no_hp'], 
-            $row['tipe_motor'], 
-            $row['layanan'], 
-            $row['keluhan'], 
-            $row['tanggal_booking'], 
-            $row['jam_booking'], 
-            $row['created_at'], 
-            $row['status']
+            $no++,
+            $row["nama"],
+            $row["no_hp"],
+            $row["tipe_motor"],
+            $row["layanan"],
+            $row["keluhan"],
+            $row["tanggal_booking"],
+            $row["jam_booking"],
+            $row["created_at"],
+            $row["status"],
         ]);
-      }
-      
+    }
+
     fclose($output);
-    exit;
-  }
+    exit();
+}
 
 // Export ke PDF
-require('fpdf186/fpdf.php');
+require "fpdf186/fpdf.php";
 
-if (isset($_POST['export_pdf'])) {
+if (isset($_POST["export_pdf"])) {
     // Query data booking
     $result = mysqli_query($conn, "SELECT * FROM booking");
 
     // Membuat instance PDF
     $pdf = new FPDF();
     $pdf->AddPage();
-    $pdf->SetFont('Arial', 'B', 12);
-    
+    $pdf->SetFont("Arial", "B", 12);
+
     // Menulis judul
-    $pdf->Cell(200, 10, 'Daftar Booking Servis', 0, 1, 'C');
+    $pdf->Cell(200, 10, "Daftar Booking Servis", 0, 1, "C");
     $pdf->Ln(10);
 
     // Menulis header tabel
-    $pdf->Cell(10, 10, 'No', 1);
-    $pdf->Cell(40, 10, 'Nama', 1);
-    $pdf->Cell(30, 10, 'No HP', 1);
-    $pdf->Cell(40, 10, 'Tipe Motor', 1);
-    $pdf->Cell(40, 10, 'Layanan', 1);
-    $pdf->Cell(30, 10, 'Tanggal', 1);
-    $pdf->Cell(30, 10, 'Jam', 1);
-    $pdf->Cell(40, 10, 'Waktu Booking', 1);
-    $pdf->Cell(30, 10, 'Status', 1);
+    $pdf->Cell(10, 10, "No", 1);
+    $pdf->Cell(40, 10, "Nama", 1);
+    $pdf->Cell(30, 10, "No HP", 1);
+    $pdf->Cell(40, 10, "Tipe Motor", 1);
+    $pdf->Cell(40, 10, "Layanan", 1);
+    $pdf->Cell(30, 10, "Tanggal", 1);
+    $pdf->Cell(30, 10, "Jam", 1);
+    $pdf->Cell(40, 10, "Waktu Booking", 1);
+    $pdf->Cell(30, 10, "Status", 1);
     $pdf->Ln();
-    
+
     // Menulis data ke tabel PDF
     $no = 1;
     while ($row = mysqli_fetch_assoc($result)) {
-      $pdf->Cell(10, 10, $no++, 1);
-        $pdf->Cell(40, 10, $row['nama'], 1);
-        $pdf->Cell(30, 10, $row['no_hp'], 1);
-        $pdf->Cell(40, 10, $row['tipe_motor'], 1);
-        $pdf->Cell(40, 10, $row['layanan'], 1);
-        $pdf->Cell(30, 10, $row['tanggal_booking'], 1);
-        $pdf->Cell(30, 10, $row['jam_booking'], 1);
-        $pdf->Cell(40, 10, $row['created_at'], 1);
-        $pdf->Cell(30, 10, $row['status'], 1);
+        $pdf->Cell(10, 10, $no++, 1);
+        $pdf->Cell(40, 10, $row["nama"], 1);
+        $pdf->Cell(30, 10, $row["no_hp"], 1);
+        $pdf->Cell(40, 10, $row["tipe_motor"], 1);
+        $pdf->Cell(40, 10, $row["layanan"], 1);
+        $pdf->Cell(30, 10, $row["tanggal_booking"], 1);
+        $pdf->Cell(30, 10, $row["jam_booking"], 1);
+        $pdf->Cell(40, 10, $row["created_at"], 1);
+        $pdf->Cell(30, 10, $row["status"], 1);
         $pdf->Ln();
     }
 
     // Output PDF ke browser
-    $pdf->Output('D', 'booking_data.pdf');
-    exit;
+    $pdf->Output("D", "booking_data.pdf");
+    exit();
 }
-
 ?>
 <!-- html here -->
 <!DOCTYPE html>
@@ -152,22 +160,17 @@ if (isset($_POST['export_pdf'])) {
 </nav>
 <!-- notifikasi -->
 
-<?php if (isset($_GET['status'])):?>
+<?php if (isset($_GET["status"])): ?>
   <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-    <?php
-      if ($_GET['status'] == 'hapus_sukses'){
-        echo 'Data berhasil dihapus!';
-      } 
-      elseif ($_GET['status'] == 'edit_sukses'){
-        echo 'Data berhasil diubah!';
-      } 
-      elseif ($_GET['status'] == 'verifikasi_sukses'){
-        echo 'Pembayaran berhasil diverifikasi!';
-      } 
-      elseif ($_GET['status'] == 'input_gagal'){
-        echo 'Gagal menyimpan data!';
-      } 
-    ?>
+    <?php if ($_GET["status"] == "hapus_sukses") {
+        echo "Data berhasil dihapus!";
+    } elseif ($_GET["status"] == "edit_sukses") {
+        echo "Data berhasil diubah!";
+    } elseif ($_GET["status"] == "verifikasi_sukses") {
+        echo "Pembayaran berhasil diverifikasi!";
+    } elseif ($_GET["status"] == "input_gagal") {
+        echo "Gagal menyimpan data!";
+    } ?>
     <a href="clearBooking.php" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
   </div>
 <?php endif; ?>
@@ -178,7 +181,11 @@ if (isset($_POST['export_pdf'])) {
     <!-- table for query -->
     <form class="d-flex mb-3" method="POST">
       <label class="col align-self-center me-2">Cari Booking:</label>
-      <input type="text" class="form-control me-2 border border-dark" name="search" placeholder="Nama, Tanggal, atau Layanan" value="<?= isset($_POST['search']) ? $_POST['search'] : '' ?>">
+      <input type="text" class="form-control me-2 border border-dark" name="search" placeholder="Nama, Tanggal, atau Layanan" value="<?= isset(
+          $_POST["search"]
+      )
+          ? $_POST["search"]
+          : "" ?>">
       <button type="submit" class="btn btn-primary me-2">Cari</button>
     </form>
 
@@ -203,30 +210,42 @@ if (isset($_POST['export_pdf'])) {
       </thead>
       <tbody>
       <?php if (mysqli_num_rows($result) > 0): ?>
-        <?php $no = 1; while($row = mysqli_fetch_assoc($result)) : ?>
+        <?php
+        $no = 1;
+        while ($row = mysqli_fetch_assoc($result)): ?>
         <tr>
           <td><?= $no++ ?></td>
-          <td><?= htmlspecialchars($row['nama']) ?></td>
-          <td><?= htmlspecialchars($row['no_hp']) ?></td>
-          <td><?= htmlspecialchars($row['tipe_motor']) ?></td>
-          <td><?= htmlspecialchars($row['layanan']) ?></td>
-          <td><?= htmlspecialchars($row['keluhan']) ?></td>
-          <td><?= $row['tanggal_booking'] ?></td>
-          <td><?= $row['jam_booking'] ?></td>
-          <td><?= $row['created_at'] ?></td>
+          <td><?= htmlspecialchars($row["nama"]) ?></td>
+          <td><?= htmlspecialchars($row["no_hp"]) ?></td>
+          <td><?= htmlspecialchars($row["tipe_motor"]) ?></td>
+          <td><?= htmlspecialchars($row["layanan"]) ?></td>
+          <td><?= htmlspecialchars($row["keluhan"]) ?></td>
+          <td><?= $row["tanggal_booking"] ?></td>
+          <td><?= $row["jam_booking"] ?></td>
+          <td><?= $row["created_at"] ?></td>
           <td>
             <?php
-              $status = htmlspecialchars($row['status']);
-              $badge = 'secondary';
-              if ($status == 'Diproses') $badge = 'warning';
-              if ($status == 'Selesai') $badge = 'success';
-              if ($status == 'Lunas') $badge = 'success';
+            $status = htmlspecialchars($row["status"]);
+            $badge = "secondary";
+            if ($status == "Diproses") {
+                $badge = "warning";
+            }
+            if ($status == "Selesai") {
+                $badge = "success";
+            }
+            if ($status == "Lunas") {
+                $badge = "success";
+            }
             ?>
             <span class="badge bg-<?= $badge ?>"><?= $status ?></span>
           </td>
           <td class="d-grid">
-             <a href="admin_hapus.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger mb-2" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
-            <a href="admin_edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+             <a href="admin_hapus.php?id=<?= $row[
+                 "id"
+             ] ?>" class="btn btn-sm btn-danger mb-2" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+            <a href="admin_edit.php?id=<?= $row[
+                "id"
+            ] ?>" class="btn btn-sm btn-warning">Edit</a>
           </td>
           <!-- upload bukti -->
           <td>
@@ -236,35 +255,38 @@ if (isset($_POST['export_pdf'])) {
               <button  class="btn btn-success btn-sm mt-2" type="submit">Kirim</button>
             </form>
             <?php
-              include 'db/koneksi.php';
-              $id = $row['id'];
-              
-              if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $nama_file = $_FILES['bukti']['name'];
-                $tmp = $_FILES['bukti']['tmp_name'];
-                $folder = 'uploads/' . $nama_file;
-                
+            include "db/koneksi.php";
+            $id = $row["id"];
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $nama_file = $_FILES["bukti"]["name"];
+                $tmp = $_FILES["bukti"]["tmp_name"];
+                $folder = "uploads/" . $nama_file;
+
                 move_uploaded_file($tmp, $folder);
-                
+
                 $query = "UPDATE booking SET bukti_transfer='$folder', status_pembayaran='Menunggu Verifikasi' WHERE id=$id";
                 mysqli_query($conn, $query);
-                
+
                 header("Location: admin_booking.php?upload=success");
-              }
-              ?>
+            }
+            ?>
           </td>
           <td>
             <!--Verifikasi bukti pembayaran -->
-            <?php if ($row['bukti_transfer']): ?>
-              <a href="<?= $row['bukti_transfer'] ?>" target="_blank">Lihat Bukti</a>
+            <?php if ($row["bukti_transfer"]): ?>
+              <a href="<?= $row[
+                  "bukti_transfer"
+              ] ?>" target="_blank">Lihat Bukti</a>
             <?php endif; ?>
           <form method="post" action="verifikasi_pembayaran.php">
-            <input type="hidden" name="id" value="<?= $row['id'] ?>">
+            <input type="hidden" name="id" value="<?= $row["id"] ?>">
             <button type="submit" name="verif" class="btn btn-success">Tandai Sudah</button>
           </form>
           </td>
         </tr>
-        <?php endwhile; ?>
+        <?php endwhile;
+        ?>
           <?php else: ?>
             <tr><td colspan="9" class="text-center">Belum ada booking.</td></tr>
         <?php endif; ?>
