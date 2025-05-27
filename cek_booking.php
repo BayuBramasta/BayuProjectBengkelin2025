@@ -15,8 +15,8 @@
   </div>
 
 <?php
-include "db/koneksi.php";
 
+include "db/koneksi.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $kodeBooking = mysqli_real_escape_string($conn, $_POST["kode_booking"]);
     $query = "SELECT * FROM booking WHERE kode_booking = '$kodeBooking' ORDER BY created_at DESC";
@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <th>Tanggal</th>
                 <th>Jam</th>
                 <th>Status</th>
+                <th>Aksi</th>
               </tr></thead><tbody>';
 
         while ($row = mysqli_fetch_assoc($result)) {
@@ -42,13 +43,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <td>' .
                 htmlspecialchars($row["layanan"]) .
                 '</td>
-                    <td>' .
+                <td>' .
                 $row["tanggal_booking"] .
                 '</td>
-                    <td>' .
+                <td>' .
                 $row["jam_booking"] .
                 '</td>
-                    <td><span class="badge bg-' .
+                <td><span class="badge bg-' .
                 ($row["status"] == "Selesai"
                     ? "success"
                     : ($row["status"] == "Diproses"
@@ -57,9 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 '">' .
                 $row["status"] .
                 '</span></td>
+                <td>' .
+                "<a href='/project2025/Midtrans/midtrans-php/examples/snap/checkout-process-simple-version.php?kodeBooking=$kodeBooking'>Bayar</a>" .
+                '</td>
                   </tr>';
         }
-
         echo "</tbody></table>";
     } else {
         echo '<div class="alert alert-danger">Data booking tidak ditemukan untuk nomor tersebut.</div>';
