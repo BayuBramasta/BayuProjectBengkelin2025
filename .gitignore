@@ -12,4 +12,10 @@ admin/
 package-lock.json
 package.json
 .prettierrc
-/node_module/
+node_module/
+.bin
+@prettier
+linguist-languages
+php-parser
+prettier
+**.json
