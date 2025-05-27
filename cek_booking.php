@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $row["status"] .
                 '</span></td>
                 <td>' .
-                "<a href='/project2025/Midtrans/midtrans-php/examples/snap/checkout-process-simple-version.php?kodeBooking=$kodeBooking'>Bayar</a>" .
+                "<a href='/project2025/midtrans/examples/snap/checkout-process-simple-version.php?kodeBooking=$kodeBooking'>Bayar</a>" .
                 '</td>
                   </tr>';
         }
