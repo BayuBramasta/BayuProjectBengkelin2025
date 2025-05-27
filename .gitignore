@@ -12,3 +12,4 @@ admin/
 node_module/
 package-lock.json
 package.json
+.prettierrc
